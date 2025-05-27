@@ -1,0 +1,24 @@
+---
+- name: Deploy SSM Agent configuration file
+  hosts: home_servers
+  become: true
+
+  vars:
+    ssm_config_source: "amazon-ssm-agent.json.template"
+    ssm_config_dest: "/etc/amazon/ssm/amazon-ssm-agent.json"
+
+  tasks:
+    - name: Copy new SSM configuration file (with automatic backup)
+      ansible.builtin.copy:
+        remote_src: false
+        src: "{{ ssm_config_source }}"
+        dest: "{{ ssm_config_dest }}"
+        mode: '0644'
+        owner: root
+        group: root
+        backup: true
+
+    - name: Restart SSM agent service (if running)
+      ansible.builtin.command:
+        cmd: snap restart amazon-ssm-agent
+      ignore_errors: true

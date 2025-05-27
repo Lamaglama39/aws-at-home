@@ -1,0 +1,55 @@
+---
+- name: Uninstall SSM Agent from Debian/Ubuntu
+  hosts: home_servers
+  become: true
+
+  tasks:
+    - name: clear SSM agent registration
+      ansible.builtin.command:
+        cmd: sudo /snap/amazon-ssm-agent/current/amazon-ssm-agent -register -clear
+
+    - name: Stop SSM agent service
+      ansible.builtin.command:
+        cmd: snap stop amazon-ssm-agent
+      ignore_errors: true
+
+    - name: Remove SSM agent snap package
+      ansible.builtin.command:
+        cmd: snap remove amazon-ssm-agent
+      ignore_errors: true
+
+    - name: Remove root aws credentials
+      ansible.builtin.file:
+        path: /root/.aws
+        state: absent
+
+    - name: Remove SSM configuration directory
+      ansible.builtin.file:
+        path: /etc/amazon/ssm
+        state: absent
+
+    - name: Remove SSM data directory
+      ansible.builtin.file:
+        path: /var/lib/amazon/ssm
+        state: absent
+
+    - name: Remove SSM log directory
+      ansible.builtin.file:
+        path: /var/log/amazon/ssm
+        state: absent
+
+    - name: Remove temporary SSM installer directory
+      ansible.builtin.file:
+        path: /tmp/ssm
+        state: absent
+
+    - name: Check if SSM agent is completely removed
+      ansible.builtin.command:
+        cmd: snap list amazon-ssm-agent
+      register: ssm_check
+      failed_when: false
+      changed_when: false
+
+    - name: Display removal status
+      ansible.builtin.debug:
+        msg: "SSM Agent removal completed. Status: {{ 'Successfully removed' if ssm_check.rc != 0 else 'Still installed' }}" 

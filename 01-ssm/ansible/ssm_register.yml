@@ -1,0 +1,22 @@
+---
+- name: Install and Register SSM Agent on Debian/Ubuntu
+  hosts: home_servers
+  become: true
+
+  tasks:
+    - name: Create a temporary directory for the installer
+      ansible.builtin.file:
+        path: /tmp/ssm
+        state: directory
+        mode: '0755'
+
+    - name: Download the SSM installer script
+      ansible.builtin.get_url:
+        url: "https://amazon-ssm-{{ aws_region }}.s3.{{ aws_region }}.amazonaws.com/latest/debian_amd64/ssm-setup-cli"
+        dest: /tmp/ssm/ssm-setup-cli
+        mode: '0755'
+
+    - name: Register the node with SSM (if not already registered)
+      ansible.builtin.command:
+        cmd: /tmp/ssm/ssm-setup-cli -register -activation-code "{{ ssm_activation_code }}" -activation-id "{{ ssm_activation_id }}" -region "{{ aws_region }}"
+        creates: /etc/amazon/ssm/amazon-ssm-agent.json
