@@ -14,6 +14,7 @@ AWS CloudWatchエージェントを使用することで、自宅サーバーの
 
 ### Terraform
 - `terraform/main.tf`: CloudWatchエージェント用のAWSリソース（IAMユーザー、アクセスキー、SSMパラメータ、CloudWatch Alarm）を作成
+- `terraform/alarm.tf`: CloudWatch Alarm を作成
 - `terraform/amazon-cloudwatch-agent.json`: CloudWatchエージェントの設定ファイル
 
 ### Ansible
