@@ -1,0 +1,64 @@
+{
+	"agent": {
+		"metrics_collection_interval": 60,
+		"run_as_user": "root"
+	},
+	"logs": {
+		"logs_collected": {
+			"files": {
+				"collect_list": [
+					{
+						"file_path": "/var/log/syslog",
+						"log_group_name": "/var/log/syslog",
+						"log_stream_name": "{hostname}"
+					}
+				]
+			}
+		}
+	},
+	"metrics": {
+		"metrics_collected": {
+			"cpu": {
+				"measurement": [
+					"cpu_usage_idle",
+					"cpu_usage_iowait",
+					"cpu_usage_steal",
+					"cpu_usage_guest",
+					"cpu_usage_user",
+					"cpu_usage_system"
+				],
+				"resources": [
+					"*"
+				],
+				"totalcpu": true
+			},
+			"disk": {
+				"measurement": [
+					"used_percent"
+				],
+				"resources": [
+					"*"
+				]
+			},
+			"diskio": {
+				"measurement": [
+					"io_time",
+					"write_bytes",
+					"read_bytes",
+					"writes",
+					"reads"
+				],
+				"resources": [
+					"*"
+				]
+			},
+			"mem": {
+				"measurement": [
+                    "mem_used",
+                    "mem_cached",
+                    "mem_total"
+				]
+			}
+		}
+	}
+}
